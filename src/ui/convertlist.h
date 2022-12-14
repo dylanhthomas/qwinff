@@ -24,6 +24,7 @@
 #include <QHash>
 #include <QMessageBox>
 #include <QModelIndex>
+#include <QElapsedTimer>
 #include "converter/conversionparameters.h"
 
 class MediaConverter;
@@ -188,7 +189,7 @@ private:
     void output_filenames_pop(const QString& filename);
     QHash<QString, int>& output_filenames();
 
-    QTime m_startTime;
+    QElapsedTimer m_startTime;
     void init_treewidget(QTreeWidget*);
     void init_treewidget_fill_column_titles(QStringList&);
     void init_treewidget_columns_visibility(QTreeWidget*);

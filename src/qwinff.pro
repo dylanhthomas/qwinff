@@ -166,6 +166,7 @@ win32 {
     RC_FILE = appicon.rc
     # Shutdown
     LIBS += -lpowrprof
+    LIBS += -lopengl32
     SOURCES -= services/powermanagement-dummy.cpp
     SOURCES += services/powermanagement-w32.cpp
 }
