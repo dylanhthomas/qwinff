@@ -16,6 +16,7 @@
  */
 
 #include "mainwindow.h"
+#include "qregularexpression.h"
 #include "ui_mainwindow.h"
 #include "convertlist.h"
 #include "addtaskwizard.h"
@@ -644,9 +645,11 @@ void MainWindow::setup_appicon()
     QIcon icon;
     QDir iconDir = QDir(":/app/icons/");
     QStringList fileList = iconDir.entryList();
-    QRegExp pattern("^qwinff_[0-9]+x[0-9]+\\.png$");
+    QRegularExpression pattern("^qwinff_[0-9]+x[0-9]+\\.png$");
+
     foreach (QString file, fileList) {
-        if (pattern.indexIn(file) >= 0) {
+        QRegularExpressionMatch pattern_file = pattern.match(file);
+        if (pattern_file.hasMatch()) {
             icon.addPixmap(QPixmap(iconDir.absoluteFilePath(file)));
         }
     }

@@ -16,7 +16,7 @@
  */
 
 #include <QDebug>
-#include <QRegExp>
+#include <QRegularExpression>
 #include "constants.h"
 #include "xmllookuptable.h"
 
@@ -26,7 +26,7 @@ namespace
 {
     bool constants_initialized = false;
     XmlLookupTable constants;
-    QString color_pattern(QString("#(%1%1)(%1%1)(%1%1)(%1%1)?").arg(REGEXP_HEXDIGIT));
+//    QString color_pattern(QString("#(%1%1)(%1%1)(%1%1)(%1%1)?").arg(REGEXP_HEXDIGIT));
 
     QString lookup_constant(const QString& key)
     {
@@ -50,14 +50,17 @@ namespace
 
     QColor str2color(const QString& color_str)
     {
-        QRegExp color(color_pattern);
-        if (color.indexIn(color_str) >= 0) {
-            int r_value = hex2int(color.cap(1));
-            int g_value = hex2int(color.cap(2));
-            int b_value = hex2int(color.cap(3));
+        QRegularExpression color("#(%1%1)(%1%1)(%1%1)(%1%1)?");
+        QRegularExpressionMatch match = color.match(color_str);
+
+
+        if (match.hasMatch()) {
+            int r_value = hex2int(match.captured(1));
+            int g_value = hex2int(match.captured(2));
+            int b_value = hex2int(match.captured(3));
             int a_value = 0xff;
-            if (!color.cap(4).isEmpty()) // with alpha value
-                a_value = hex2int(color.cap(4));
+            if (!match.captured(4).isEmpty()) // with alpha value
+                a_value = hex2int(match.captured(4));
             return QColor(r_value, g_value, b_value, a_value);
         } else {
             return QColor(0, 0, 0); // default black
@@ -107,8 +110,8 @@ QString Constants::getString(const char *key)
 QStringList Constants::getSpaceSeparatedList(const char *key)
 {
     Q_ASSERT(constants_initialized);
-    QString collapsed_string = lookup_constant(key).replace(QRegExp("[\n\t ]"), " ");
-    return collapsed_string.split(" ", QString::SkipEmptyParts);
+    QString collapsed_string = lookup_constant(key).replace(QRegularExpression("[\n\t ]"), " ");
+    return collapsed_string.split(" ", Qt::SkipEmptyParts);
 }
 
 QColor Constants::getColor(const char *key)

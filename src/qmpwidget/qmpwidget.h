@@ -29,7 +29,7 @@
 class QAbstractSlider;
 class QImage;
 class QProcess;
-class QStringList;
+//class QStringList;
 
 class QMPProcess;
 

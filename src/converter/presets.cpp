@@ -18,10 +18,13 @@
 #include "presets.h"
 #include "ffmpeginterface.h"
 #include "../services/versioncompare.h"
+#include "qregularexpression.h"
+#include <algorithm>
 #include <QMultiMap>
 #include <QXmlStreamReader>
 #include <QFile>
 #include <QDebug>
+#include <QRegularExpression>
 
 struct Presets::Private
 {
@@ -154,32 +157,51 @@ void Presets::Private::removeUnavailablePresets()
     if (!FFmpegInterface::getSubtitleEncoders(subtitle_encoders))
         Q_ASSERT(subtitle_encoders.isEmpty());
 
-    QRegExp audio_codec_pattern("-acodec\\s+([^ ]+)");
-    QRegExp video_codec_pattern("-vcodec\\s+([^ ]+)");
-    QRegExp subtitle_codec_pattern("-scodec\\s+([^ ]+)");
+    QRegularExpression audio_codec_pattern("-acodec\\s+([^ ]+)");
+    QRegularExpression video_encoders_pattern("-vcodec\\s+([^ ]+)");
+    QRegularExpression subtitle_codec_pattern("-scodec\\s+([^ ]+)");
+
+
+//    QRegularExpression color("#(%1%1)(%1%1)(%1%1)(%1%1)?");
+//    QRegularExpressionMatch match = color.match(color_str);
+
+
+//    if (match.hasMatch()) {
+//        int r_value = hex2int(match.captured(1));
+//        int g_value = hex2int(match.captured(2));
+
+
+
+
+
 
     QMultiMap<QString, Preset>::iterator it = presets.begin();
     while (it!=presets.end()) {
         bool remove = false;
         QString& params = it.value().parameters;
 
+
+        QRegularExpressionMatch audio_codec_pattern_match = audio_codec_pattern.match(params);
         // Check unavailable audio presets
-        if (audio_codec_pattern.indexIn(params) != -1) {
-            if (!audio_encoders.contains(audio_codec_pattern.cap(1))) {
+        if (audio_codec_pattern_match.hasMatch()){
+            if (!audio_codec_pattern_match.hasCaptured(1)) {
                 remove = true;
             }
         }
 
+        QRegularExpressionMatch video_encoders_pattern_match = video_encoders_pattern.match(params);
         // Check unavailable video presets
-        if (!remove && video_codec_pattern.indexIn(params) != -1) {
-            if (!video_encoders.contains(video_codec_pattern.cap(1))) {
+        if (!remove && video_encoders_pattern_match.hasMatch()) {
+            if (!video_encoders_pattern_match.hasCaptured(1)) {
                 remove = true;
             }
         }
+
+        QRegularExpressionMatch subtitle_codec_pattern_match = subtitle_codec_pattern.match(params);
 
         // Check unavailable subtitle presets
-        if (!remove && subtitle_codec_pattern.indexIn(params) != -1) {
-            if (!subtitle_encoders.contains(subtitle_codec_pattern.cap(1))) {
+        if (!remove && subtitle_codec_pattern_match.hasMatch()) {
+            if (!subtitle_codec_pattern_match.hasCaptured(1)) {
                 remove = true;
             }
         }
@@ -195,7 +217,7 @@ QString Presets::Private::getVersionAttribute(const QXmlStreamAttributes &attrs)
 {
     QString version;
     foreach (QXmlStreamAttribute attr, attrs) {
-        if (attr.name() == "version") {
+        if (attr.name().toString() == "version") {
             version = attr.value().toString();
             break;
         }
@@ -238,7 +260,9 @@ bool Presets::readFromFile(const char *filename, bool removeUnavailableCodecs)
 bool Presets::getExtensions(QList<QString> &target) const
 {
     QList<Preset> presetList = p->presets.values();
-    qSort(presetList); // sort presets by id
+//    std::sort(presetList); // sort presets by id
+//new way
+    std::sort(presetList.begin(), presetList.end());
 
     target.clear();
     QString extension("");
@@ -249,9 +273,14 @@ bool Presets::getExtensions(QList<QString> &target) const
         }
     }
     // remove duplicate entries
-    target = target.toSet().toList();
-    // sort target
-    qSort(target);
+//    target = target.toSet().toList();
+//    // sort target
+//    std::sort(target);
+
+// new way?
+    std::sort(target.begin(), target.end());
+    target.erase(std::unique(target.begin(), target.end()),
+                    target.end());
     return true;
 }
 

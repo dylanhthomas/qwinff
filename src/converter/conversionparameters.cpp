@@ -17,6 +17,7 @@
 
 #include "conversionparameters.h"
 #include "mediaprobe.h"
+#include "qregularexpression.h"
 #include <QStringList>
 #include <QDebug>
 #include <cassert>
@@ -53,14 +54,14 @@ int parseFFmpegArguments(QStringList& args, int index, ConversionParameters& res
 #define CHECK_OPTION_2_METHOD(argument, property, convertmethod) \
     else if (arg == argument) do { \
         QString nextarg = args[index+1]; \
-        nextarg.replace(QRegExp("[a-z]"), ""); /* remove units */ \
+        nextarg.replace(QRegularExpression("[a-z]"), ""); /* remove units */ \
         result.property = nextarg.convertmethod(); \
         used_arg_count = 2; } while (0)
 
 #define CHECK_OPTION_2_FUNCTION(argument, property, convertfunction) \
     else if (arg == argument) do { \
         QString nextarg = args[index+1]; \
-        nextarg.replace(QRegExp("[a-z]"), ""); /* remove units */ \
+        nextarg.replace(QRegularExpression("[a-z]"), ""); /* remove units */ \
         result.property = convertfunction(nextarg); \
         used_arg_count = 2; } while (0)
 
@@ -96,10 +97,10 @@ int parseFFmpegArguments(QStringList& args, int index, ConversionParameters& res
 
             // width and height are in the same parameter (for example: "-s 800x600")
             CHECK_OPTION("-s") {
-                QRegExp pattern("([0-9]+)x([0-9]+)");
+                QRegularExpression pattern("([0-9]+)x([0-9]+)");
                 if (pattern.indexIn(args[index+1]) != -1) {
-                    result.video_width = pattern.cap(1).toInt();
-                    result.video_height = pattern.cap(2).toInt();
+                    result.video_width = pattern.captured(1).toInt();
+                    result.video_height = pattern.captured(2).toInt();
                     used_arg_count = 2;
                 }
             }
@@ -135,7 +136,7 @@ ConversionParameters
 ConversionParameters::fromFFmpegParameters(const QString &params_str)
 {
     ConversionParameters result;
-    QStringList args = params_str.split(" ", QString::SkipEmptyParts);
+    QStringList args = params_str.split(" ", Qt::SkipEmptyParts);
 
     for (int i=0; i<args.size();) {
         int used_arg_count = parseFFmpegArguments(args, i, result);

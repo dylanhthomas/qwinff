@@ -18,7 +18,7 @@
 #include "ffmpeginterface.h"
 #include "mediaprobe.h"
 #include "exepath.h"
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QTextStream>
 #include <QDebug>
 #include <QAtomicInt>
@@ -89,7 +89,7 @@ namespace inner {
         QString encoders_str = s.mid(begin, length);
 
         // split encoder_str into encoder names and skip whitespaces
-        QStringList encoders = encoders_str.split(' ', QString::SkipEmptyParts);
+        QStringList encoders = encoders_str.split(' ', Qt::SkipEmptyParts);
         foreach (QString s, encoders) {
             target.push_back(s); // fill codec names into the list
         }
@@ -123,21 +123,27 @@ namespace inner {
         }
 
         // Find all available encoders
-        QRegExp pattern("[ D]E([ VAS])...\\s+([^ ]+)\\s*(.*)$");
+
         QStringList encoder_list; // temporary storage of encoder names
         const int AV_INDEX = 1;
         const int CODEC_NAME_INDEX = 2;
         const int CODEC_DESC = 3;
+
+        QRegularExpression encoder_pattern("[ D]E([ VAS])...\\s+([^ ]+)\\s*(.*)$");
+
 
         ffmpeg_codec_info.clear();
         while (ffmpeg_process.canReadLine()) {
             QString line(ffmpeg_process.readLine());
             ffmpeg_codec_info.append(line);
 
-            if (pattern.indexIn(line) != -1) {
-                QString av = pattern.cap(AV_INDEX);
-                QString codec = pattern.cap(CODEC_NAME_INDEX);
-                QString desc = pattern.cap(CODEC_DESC);
+            QRegularExpressionMatch encoders = encoder_pattern.match(line);
+
+
+            if (encoders.hasMatch()) {
+                QString av = encoders.captured(AV_INDEX);
+                QString codec = encoders.captured(CODEC_NAME_INDEX);
+                QString desc = encoders.captured(CODEC_DESC);
 
                 // extract codec names
                 encoder_list.clear();
@@ -195,7 +201,8 @@ namespace inner {
         demuxing_formats.clear();
         ffmpeg_format_info.clear();
 
-        QRegExp pattern("^ ([ D])([ E]) ([^ ]+)\\s+(.*)$");
+        QRegularExpression encoder_pattern("^ ([ D])([ E]) ([^ ]+)\\s+(.*)$");
+
         const int INDEX_DEMUX = 1;
         const int INDEX_MUX = 2;
         const int INDEX_NAME = 3;
@@ -204,11 +211,15 @@ namespace inner {
         while (ffmpeg_process.canReadLine()) {
             QString line(ffmpeg_process.readLine());
             ffmpeg_format_info.append(line);
-            if (pattern.indexIn(line) != -1) {
-                QString name = pattern.cap(INDEX_NAME);
-                if (pattern.cap(INDEX_DEMUX) == "D")
+
+            QRegularExpressionMatch encoders = encoder_pattern.match(line);
+
+
+            if (encoders.hasMatch()) {
+                QString name = encoders.captured(INDEX_NAME);
+                if (encoders.captured(INDEX_DEMUX) == "D")
                     demuxing_formats.append(name);
-                if (pattern.cap(INDEX_MUX) == "E")
+                if (encoders.captured(INDEX_MUX) == "E")
                     muxing_formats.append(name);
             }
         }
@@ -255,10 +266,11 @@ namespace inner {
     // extract error message from the line
     QString extract_errmsg(const QString& line)
     {
-        QRegExp pattern("^[^:]*:(.*)$");
+        QRegularExpression pattern("^[^:]*:(.*)$");
+        QRegularExpressionMatch pattern_match = pattern.match(line);
         const int INDEX_MESSAGE = 1;
-        if (pattern.indexIn(line) != -1)
-            return pattern.cap(INDEX_MESSAGE).trimmed();
+        if (pattern_match.hasMatch())
+            return pattern_match.captured(INDEX_MESSAGE).trimmed();
         else
             return "";
     }
@@ -281,9 +293,9 @@ struct FFmpegInterface::Private
     double duration;
     double progress;
     QString stringBuffer;
-    QRegExp progress_pattern;
-    QRegExp progress_pattern_2;
-    QRegExp duration_pattern;
+    QRegularExpression progress_pattern;
+    QRegularExpression progress_pattern_2;
+    QRegularExpression duration_pattern;
 
     bool encoders_read;
     QList<QString> audio_encoders;
@@ -308,21 +320,22 @@ struct FFmpegInterface::Private
 */
 bool FFmpegInterface::Private::check_progress(const QString& line)
 {
-    QRegExp& pattern = progress_pattern;
-    int index = pattern.indexIn(line);
-    if (index != -1) {
-        const double t = pattern.cap(patterns::PROG_1_TIME).toDouble();
+    QRegularExpressionMatch pattern = progress_pattern.match(line);
+//    int index = pattern.indexIn(line);
+    if (pattern.hasMatch()) {
+        const double t = pattern.captured(patterns::PROG_1_TIME).toDouble();
 
         // calculate progress
         progress = (t / duration) * 100;
 
         return true;
     } else { // try another pattern
-        QRegExp& alternate_pattern = progress_pattern_2;
-        if (alternate_pattern.indexIn(line) != -1) {
-            const int hour = alternate_pattern.cap(patterns::PROG_2_HR).toInt();
-            const int min = alternate_pattern.cap(patterns::PROG_2_MIN).toInt();
-            const double sec = alternate_pattern.cap(patterns::PROG_2_SEC).toDouble();
+
+        QRegularExpressionMatch alternate_pattern = progress_pattern_2.match(line);
+        if (alternate_pattern.hasMatch()) {
+            const int hour = alternate_pattern.captured(patterns::PROG_2_HR).toInt();
+            const int min = alternate_pattern.captured(patterns::PROG_2_MIN).toInt();
+            const double sec = alternate_pattern.captured(patterns::PROG_2_SEC).toDouble();
             const double t = hour*3600 + min*60 + sec;
 
             progress = (t / duration) * 100;
@@ -388,7 +401,7 @@ QStringList FFmpegInterface::Private::getOptionList(const ConversionParameters &
     /* ==== Additional Options ==== */
     if (!o.ffmpeg_options.isEmpty()) {
         QList<QString> additional_options =
-                o.ffmpeg_options.split(" ", QString::SkipEmptyParts);
+                o.ffmpeg_options.split(" ", Qt::SkipEmptyParts);
         foreach (QString opt, additional_options)
             list.append(opt);
     }
@@ -586,7 +599,7 @@ void FFmpegInterface::parseProcessOutput(const QString &data)
     //qDebug() << data;
 
     // split incoming data by [end of line] or [carriage return]
-    QStringList lines(data.split(QRegExp("[\r\n]"), QString::KeepEmptyParts));
+    QStringList lines(data.split(QRegularExpression("[\r\n]"), Qt::KeepEmptyParts));
 
     if (!p->stringBuffer.isEmpty()) { // prepend buffered data
         lines.front().prepend(p->stringBuffer);
@@ -634,7 +647,10 @@ bool FFmpegInterface::getAudioEncoders(QSet<QString> &target)
     QList<QString> encoder_list;
     if (!getAudioEncoders(encoder_list))
         return false;
-    target = QSet<QString>::fromList(encoder_list);
+//    target = QSet<QString>::fromList(encoder_list);
+//    QList<QString> aList = info::muxing_formats;
+    // populate list
+    target = QSet<QString> (encoder_list.begin(), encoder_list.end());
     return true;
 }
 
@@ -652,7 +668,9 @@ bool FFmpegInterface::getVideoEncoders(QSet<QString> &target)
     QList<QString> encoder_list;
     if (!getVideoEncoders(encoder_list))
         return false;
-    target = QSet<QString>::fromList(encoder_list);
+//    target = QSet<QString>::fromList(encoder_list);
+    target = QSet<QString> (encoder_list.begin(), encoder_list.end());
+
     return true;
 }
 
@@ -688,7 +706,16 @@ bool FFmpegInterface::getSupportedMuxingFormats(QSet<QString> &target)
     info::read_ffmpeg_info();
     if (!info::ffmpeg_exist) return false;
 
-    target = QSet<QString>::fromList(info::muxing_formats);
+//    target = QSet<QString>::fromList(info::muxing_formats);
+
+
+    QList<QString> aList = info::muxing_formats;
+    // populate list
+    target = QSet<QString> (aList.begin(), aList.end());
+
+
+//    target = QSet<QString> aSet((info::muxing_formats).begin(), (info::muxing_formats).end());
+
     return true;
 }
 
@@ -697,7 +724,11 @@ bool FFmpegInterface::getSupportedDemuxingFormats(QSet<QString> &target)
     info::read_ffmpeg_info();
     if (!info::ffmpeg_exist) return false;
 
-    target = QSet<QString>::fromList(info::demuxing_formats);
+//    target = QSet<QString>::fromList(info::demuxing_formats);
+
+    QList<QString> aList = info::demuxing_formats;
+    // populate list
+    target = QSet<QString> (aList.begin(), aList.end());
     return true;
 }
 
@@ -718,6 +749,8 @@ bool FFmpegInterface::getSubtitleEncoders(QSet<QString> &target)
     QList<QString> encoder_list;
     if (!getSubtitleEncoders(encoder_list))
         return false;
-    target = QSet<QString>::fromList(encoder_list);
+//    target = QSet<QString>::fromList(encoder_list);
+    target = QSet<QString> (encoder_list.begin(), encoder_list.end());
+
     return true;
 }

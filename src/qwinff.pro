@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network opengl
+QT       += core gui network opengl widgets
 
 TARGET = qwinff
 TEMPLATE = app

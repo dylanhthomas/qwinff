@@ -250,7 +250,7 @@ class QMPProcess : public QProcess
 			bool useFakeInputconf = true;
 			QString version = mplayerVersion();
 			if (version.contains("SVN")) { // Check revision
-				QRegExp re("SVN-r([0-9]*)");
+                QRegularExpression re("SVN-r([0-9]*)");
 				if (re.indexIn(version) > -1) {
 					int revision = re.cap(1).toInt();
 					if (revision >= 28878) {
@@ -331,7 +331,7 @@ class QMPProcess : public QProcess
 			}
 
 			QString output = QString(p.readAll());
-			QRegExp re("MPlayer ([^ ]*)");
+            QRegularExpression re("MPlayer ([^ ]*)");
 			if (re.indexIn(output) > -1) {
 				return re.cap(1);
 			}
@@ -491,7 +491,7 @@ class QMPProcess : public QProcess
 		// Parsas MPlayer's position output
 		void parsePosition(const QString &line)
 		{
-			static QRegExp rx("[ :]");
+            static QRegularExpression rx("[ :]");
             QStringList info = line.split(rx, Qt::SkipEmptyParts);
 
 			double oldpos = m_streamPosition;
