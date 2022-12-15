@@ -1,3 +1,7 @@
+** This branch is a project to update QWinFF to use Qt5**
+=========================================
+
+
 QWinFF, FFmpeg GUI front-end based on Qt4
 =========================================
 
