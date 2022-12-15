@@ -1,4 +1,24 @@
-** This branch is an attempt to update QWinFF to use Qt5 using QT Creator and Design Studio**
+** This branch is an attempt to revive QWinFF for my own and others' use.***
+
+## Plans
+* make it buildable with modern tools, this means updating it to Qt5 using current QT Creator and Design Studio.
+  * status
+    * the branch as it is builds in QT Creator and the app works as expected
+    * Power management has been disabled because I couldn't figure out how to update some of the functions
+* Add in updates from pull requests on main (abandoned) repository
+* Add features that I need so I can stop using multiple tools and streamline workflows for my team
+  * output filename patterns, to allow filesplitting
+
+## How to Build
+
+- Open `qwinff.pro` project in Creator
+- Activate `Build`
+- Run `windeployqt64releaseonly qwinff.exe`
+
+For last step, see this discussion and download the binary from here:
+https://forum.qt.io/topic/112861/how-to-deploy-when-using-resource-system-windows-10
+
+
 =========================================
 
 
