@@ -69,7 +69,11 @@ static bool load_constants(QApplication& app)
 #else
     QString app_path = app.applicationDirPath();
 #endif
-    QString constant_xml_filename = QDir(app_path).absoluteFilePath("constants.xml");
+    QString constant_xml_filename = QDir(app_path).filePath("constants.xml");
+//    QDir directory("Documents/Letters");
+//    QString path = directory.filePath("contents.txt");
+//    QString absolutePath = directory.absoluteFilePath("contents.txt");
+//    (previous) QString constant_xml_filename = QDir(app_path).absoluteFilePath("constants.xml");
 
     // open constant xml file
     QFile constant_xml(constant_xml_filename);

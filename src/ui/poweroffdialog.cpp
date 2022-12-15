@@ -96,6 +96,7 @@ int PoweroffDialog::exec(int action)
     const QRect screen = QApplication::desktop()->screenGeometry();
     move(screen.center() - this->rect().center());
 
+
     return QDialog::exec();
 }
 

@@ -109,7 +109,7 @@ int InteractiveCuttingDialog::exec(const QString &filename)
         player->load(filename);
         return exec();
     } else {
-        QMessageBox::critical(this, windowTitle(), tr("%1 not found").arg("mplayer"));
+        QMessageBox::critical(this, windowTitle(), tr("%1 not found - #2").arg("mplayer"));
         return QDialog::Rejected;
     }
 }

@@ -75,7 +75,7 @@ private slots:
     void conversion_started();
     void conversion_stopped();
 
-    void update_poweroff_button(int);
+//    void update_poweroff_button(int);
     void received_update_result(int);
 
 protected:

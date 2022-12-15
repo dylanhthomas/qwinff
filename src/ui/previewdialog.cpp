@@ -66,7 +66,7 @@ int PreviewDialog::exec(const QString &filename,
         refreshRange();
         return exec();
     } else {
-        QMessageBox::critical(this, windowTitle(), tr("%1 not found").arg("mplayer"));
+        QMessageBox::critical(this, windowTitle(), tr("%1 not found - #3").arg("mplayer"));
         return QDialog::Rejected;
     }
 }
