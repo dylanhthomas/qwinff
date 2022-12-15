@@ -1,4 +1,4 @@
-** This branch is a project to update QWinFF to use Qt5**
+** This branch is an attempt to update QWinFF to use Qt5 using QT Creator and Design Studio**
 =========================================
 
 
