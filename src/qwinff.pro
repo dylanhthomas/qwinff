@@ -9,8 +9,6 @@ QT       += core gui network opengl
 TARGET = qwinff
 TEMPLATE = app
 
-CONFIG += installer 
-
 debug:DESTDIR = debug
 release:DESTDIR = release
 
