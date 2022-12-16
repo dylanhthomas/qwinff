@@ -9,6 +9,11 @@ QT       += core gui network opengl
 TARGET = qwinff
 TEMPLATE = app
 
+CONFIG += installer 
+
+debug:DESTDIR = debug
+release:DESTDIR = release
+
 SOURCES += main.cpp \
     ui/progressbar.cpp \
     ui/mainwindow.cpp \
@@ -169,17 +174,9 @@ win32 {
     LIBS += -lopengl32
 #    SOURCES -= services/powermanagement-dummy.cpp
 #    SOURCES += services/powermanagement-w32.cpp
+
 }
 
-os2 {
-    # Application Icon
-    RC_FILE = appicon_os2.rc
-    # Shutdown not yet implemented on OS/2 Warp
-    # When it is done, uncomment following lines and do proper modifications
-    #LIBS +=
-    #SOURCES -= services/powermanagement-dummy.cpp
-    #SOURCES += services/powermanagement-os2.cpp
-}
 
 # This string is shown in the about box.
 DEFINES += VERSION_ID_STRING=$(VERSION_ID_STRING)
@@ -198,4 +195,27 @@ INCLUDEPATH += qmpwidget
     DEFINES += QMP_USE_YUVPIPE
 }
 
-OTHER_FILES +=
+CONFIG_FILES += \
+    $$PWD/config/
+DIST_FILES += \
+    $$PWD/tools/
+
+# copies the given files to the destination directory
+defineTest(copyToDestDir) {
+    files = $$1
+    dir = $$2
+    # replace slashes in destination path for Windows
+    win32:dir ~= s,/,\\,g
+
+    for(file, files) {
+        # replace slashes in source path for Windows
+        win32:file ~= s,/,\\,g
+
+        QMAKE_POST_LINK += $$QMAKE_COPY_DIR $$shell_quote($$file) $$shell_quote($$dir) $$escape_expand(\\n\\t)
+    }
+
+    export(QMAKE_POST_LINK)
+}
+
+copyToDestDir($$CONFIG_FILES, $$PWD/$$DESTDIR)
+copyToDestDir($$DIST_FILES, $$PWD/$$DESTDIR/tools)
