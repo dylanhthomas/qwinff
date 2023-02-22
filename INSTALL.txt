@@ -1,9 +1,10 @@
-Building and Installing QWinFF
+Building QWinFF
 ==============================
 
 QWinFF uses the Qt Toolkit as its graphical interface. You must install
-QtSDK 4.4.3 or greater to build QWinFF. Currently supported platforms are
-GNU/Linux and Microsoft Windows.
+QtSDK 5.15.2 (LTS) to build QWinFF. Microsoft Windows is only currently supported platform in the version.
+
+For GNU/Linux support, see original project: https://github.com/qwinff/qwinff
 
 QWinFF depends on several external programs at runtime. Currently these
 programs are:
@@ -13,79 +14,26 @@ programs are:
   - ffplay (optional, for previewing audio/video cutting)
   - sox (optional, for adjusting audio speed)
 
-Building on GNU/Linux
----------------------
-
-The build dependencies of QWinFF are listed as follows:
-
-  - QtSDK 4.4.3 or later
-  - libnotify (only when compiling with `USE_LIBNOTIFY=1`)
-
-Decompress the source code; open a terminal and enter the directory.
-
-Type `make`.
-
-If everything is ok, you may type "make install" to install it.
-This will install QWinFF in `/usr/`.
-
-If `make` fails, it's probably because the Qt3 toolchain is used instead of
-the Qt4 one.
-Try to type something like this (just examples):
-make QMAKE=qmake-qt4 LRELEASE=lrelease-qt4
-or
-make QMAKE=/usr/share/qt4/bin/qmake LRELEASE=/usr/share/qt4/bin/lrelease
-
-### Changing Installation Path
-
-By default, QWinFF will be installed to `/usr/`. You can change it by setting
-`PREFIX`. For example, the following command will install QWinFF in
-`/usr/local/`:
-
-	make PREFIX=/usr/local
-	make PREFIX=/usr/local install
-
-Please make sure that `PREFIX` in `make` and `make install` are the same. 
-
-### Compiling with libnotify
-
-*libnotify* is a library that sends desktop notifications. Most GNU/Linux
-distributions include it by default, and many applications make use of it to
-notify the user of some events. To compile QWinFF with libnotify, set
-`USE_LIBNOTIFY=1` when invoking `make` like `make USE_LIBNOTIFY=1`. QWinFF will
-use libnotify to send notifications if it has been built like this.
-
-If libnotify is not used at compile-time, QWinFF will try to use *notify-send*,
-which is a command-line interface to libnotify. If notify-send is available on
-the system, it will be used to send notifications. Otherwise, QWinFF will
-fallback to using Qt MessageBox.
-
-Note that libnotify 0.7+ is not compatible with its older versions
-(0.5.x, 0.6.x). QWinFF will compile with both APIs, but if you compile
-it with libnotify 0.7, it will only work with libnotify runtime 0.7,
-and vice versa.
 
 Building on Windows
 -------------------
 
 The following packages are required to build QWinFF on Windows.
 
-  - Qt4 SDK with MinGW
-  - cygwin
+  - Qt5 with MinGW (https://www.qt.io/download-qt-installer)
 
-First, install *Qt4 SDK* and *cygwin*, and add the paths containing executables
-of Qt tools and cygwin executables to `PATH`. Extract the source code to a
-directory and switch to it. Click on `windows_build.bat` to build.  (or
-`windows_build_portable.bat` which will build QWinFF as a portable application)
-If the build was successful,  the output files will be copied to
-`windows_release\`. (or `windows_release_portable\` for portable version)
+1 - Install Qt5 and add the paths containing executables
+of Qt tools executables to your `PATH`.
 
-Copy necessary Qt DLLs to `windows_release\` If you are using the official
-QtSDK, the DLLs are probably `QtCore4.dll`, `QtGui4.dll`, `QtNetwork4.dll`
-`libgcc_s_dw2-1.dll`, `libstdc++-6.dll` and `mingwm10.dll`.  These files can be
-found in `<QtSDK>\Desktop\Qt\4.x.x\mingw\bin`. Download runtime dependencies
-(`ffmpeg.exe`, `ffprobe.exe`, etc.) and placed them in `windows_release\tools`.
+2 - Extract the source code to a directory and switch to it.
 
-Now you can execute QWinFF by clicking on the executable file.
+If you are going to run the app on the same system you build it on, just run `windows_build.bat`
+This will build it referencing the Qt libraries on your system.
 
-The NSIS script `qwinff.nsi` in `windows_release\` can be used to create an
-installer. (see http://nsis.sourceforge.net)
+If you are going to distribute the app, or run it on other computers which may or may not have Qt installed, run `windows_build_portable.bat`
+This will copy all the necessary libraries into the build directory, which will then run on any Windows computer.
+
+If the build was successful, the output files will be copied to
+`windows_release\`.
+
+Now you can execute QWinFF by clicking on qwinff.exe.
