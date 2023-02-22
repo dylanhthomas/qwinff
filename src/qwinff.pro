@@ -21,7 +21,6 @@ SOURCES += main.cpp \
     ui/aboutffmpegdialog.cpp \
     ui/optionsdialog.cpp \
     ui/aboutdialog.cpp \
-#    ui/poweroffdialog.cpp \
     ui/rangeselector.cpp \
     ui/timerangeedit.cpp \
     converter/presets.cpp \
@@ -37,7 +36,6 @@ SOURCES += main.cpp \
     services/notificationservice.cpp \
     services/notificationservice-qt.cpp \
     services/notificationservice-notifysend.cpp \
-#    services/powermanagement-dummy.cpp \
     converter/audiofilter.cpp \
     converter/exepath.cpp \
     services/versioncompare.cpp \
@@ -66,7 +64,6 @@ HEADERS  += \
     ui/aboutffmpegdialog.h \
     ui/optionsdialog.h \
     ui/aboutdialog.h \
-#    ui/poweroffdialog.h \
     ui/rangeselector.h \
     ui/timerangeedit.h \
     converter/presets.h \
@@ -111,7 +108,6 @@ FORMS    += \
     ui/aboutffmpegdialog.ui \
     ui/optionsdialog.ui \
     ui/aboutdialog.ui \
-#    ui/poweroffdialog.ui \
     ui/updatedialog.ui \
     ui/previewdialog.ui \
     ui/interactivecuttingdialog.ui \
@@ -157,8 +153,6 @@ unix {
     }
     # Shutdown
     QT += dbus
-    SOURCES -= services/powermanagement-dummy.cpp
-    SOURCES += services/powermanagement-linux.cpp
 }
 
 win32 {
@@ -170,8 +164,6 @@ win32 {
     # Shutdown
     LIBS += -lpowrprof
     LIBS += -lopengl32
-#    SOURCES -= services/powermanagement-dummy.cpp
-#    SOURCES += services/powermanagement-w32.cpp
 
 }
 
