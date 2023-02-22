@@ -6,3 +6,6 @@
 *.qm
 /build-*
 .qtc_clangd/
+/windows_release
+/src/release
+/src/debug
