@@ -16,8 +16,8 @@ if not exist "%DEST_DIR%\translations" mkdir "%DEST_DIR%\translations"
 copy ".\src\release\qwinff.exe" "%DEST_DIR%"
 
 :: Copy data files to the output directory.
-copy ".\src\presets.xml" "%DEST_DIR%"
-copy ".\src\constants.xml" "%DEST_DIR%"
+copy ".\src\config\presets.xml" "%DEST_DIR%"
+copy ".\src\config\constants.xml" "%DEST_DIR%"
 copy ".\src\tools\*" "%DEST_DIR%\tools"
 copy ".\src\translations\*.qm" "%DEST_DIR%\translations"
 copy "COPYING.txt" "%DEST_DIR%\license.txt"
