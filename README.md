@@ -29,7 +29,7 @@ https://forum.qt.io/topic/112861/how-to-deploy-when-using-resource-system-window
 Build referencing system libraries:
 - run `windows_build.bat`
 
-Build to run portabl:
+Build to run portable:
 - run `windows_build_portable.bat`
 
 
