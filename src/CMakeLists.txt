@@ -25,7 +25,6 @@ set(qwinff_source_files
   services/notificationservice-notifysend.cpp
   services/notificationservice-qt.cpp
   services/paths.cpp
-  services/powermanagement-dummy.cpp
   services/settingtimer.cpp
   services/updatechecker.cpp
   services/updateinfoparser.cpp
@@ -42,7 +41,6 @@ set(qwinff_source_files
   ui/mediaplayerwidget.cpp
   ui/myqmpwidget.cpp
   ui/optionsdialog.cpp
-  ui/poweroffdialog.cpp
   ui/previewdialog.cpp
   ui/progressbar.cpp
   ui/rangeselector.cpp
@@ -58,7 +56,6 @@ set(qwinff_ui_files
   ui/aboutffmpegdialog.ui
   ui/optionsdialog.ui
   ui/aboutdialog.ui
-  ui/poweroffdialog.ui
   ui/updatedialog.ui
   ui/previewdialog.ui
   ui/interactivecuttingdialog.ui

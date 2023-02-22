@@ -1,23 +1,41 @@
-** This branch is an attempt to revive QWinFF for my own and others' use.***
+** This branch is an attempt to revive QWinFF for my own and others' use. For the forseeable future, this will be a WINDOWS-ONLY project. There are many other great Linux and Mac media converters. If someone wants to support other platform development, please let me know.***
+
+
+## Current Status
+
+- Builds on windows command-line using Qt5
+- Focus is on Windows portable builds
+
+## Changes
+
+- Updated to build in Qt 5.15.2 (LTS)
+- Removed power management-related. It appears that this never really worked.
+- Removed installer-related items. Will be focusing on portable use case.
+
 
 ## Plans
-* make it buildable with modern tools, this means updating it to Qt5 using current QT Creator and Design Studio.
-  * status
-    * the branch as it is builds in QT Creator and the app works as expected
-    * Power management has been disabled because I couldn't figure out how to update some of the functions
-* Add in updates from pull requests on main (abandoned) repository
-* Add features that I need so I can stop using multiple tools and streamline workflows for my team
-  * output filename patterns, to allow filesplitting
+- Add in updates from pull requests on main (abandoned) repository
+- Add features that I need so I can stop using multiple tools and streamline workflows for my team
+  - output filename patterns, to allow filesplitting
 
 ## How to Build
 
-- Open `qwinff.pro` project in Creator
-- Activate `Build`
-- Run `windeployqt64releaseonly qwinff.exe`
+Prerequisites:
+- Install Qt build tools in your path
+- To make portable, install patched version of `windeployqt` (See this discussion and download the binary from here:
+https://forum.qt.io/topic/112861/how-to-deploy-when-using-resource-system-windows-10)
 
-For last step, see this discussion and download the binary from here:
-https://forum.qt.io/topic/112861/how-to-deploy-when-using-resource-system-windows-10
 
+Build referencing system libraries:
+- run `windows_build.bat`
+
+Build to run portabl:
+- run `windows_build_portable.bat`
+
+
+
+
+## Previous README below
 
 =========================================
 

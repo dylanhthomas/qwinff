@@ -80,7 +80,6 @@ HEADERS  += \
     services/notificationservice.h \
     services/notificationservice-qt.h \
     services/notificationservice-notifysend.h \
-    services/powermanagement.h \
     converter/audiofilter.h \
     converter/exepath.h \
     extra-translations.h \

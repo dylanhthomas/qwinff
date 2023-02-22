@@ -1,9 +1,6 @@
 @echo off
 set DEST_DIR=.\windows_release
 
-:: Save version string to variable %VERSION%
-for /f "delims=" %%v in ('sh src\get-version.sh') do @set VERSION=%%v
-
 pushd src
 lrelease qwinff.pro
 qmake
@@ -20,12 +17,10 @@ copy ".\src\release\qwinff.exe" "%DEST_DIR%"
 
 :: Copy data files to the output directory.
 copy ".\src\presets.xml" "%DEST_DIR%"
-sed "s/\(<CheckUpdateOnStartup [^>]*>\)[\t ]*false/\1true/" ".\src\constants.xml" > "%DEST_DIR%/constants.xml"
+copy ".\src\constants.xml" "%DEST_DIR%"
+copy ".\src\tools\*" "%DEST_DIR%\tools"
 copy ".\src\translations\*.qm" "%DEST_DIR%\translations"
 copy "COPYING.txt" "%DEST_DIR%\license.txt"
 copy "CHANGELOG.txt" "%DEST_DIR%\changelog.txt"
-sed "s/@QWINFF_VERSION@/%VERSION%/" "qwinff.nsi.in" > "%DEST_DIR%\qwinff.nsi"
-unix2dos "%DEST_DIR%\license.txt"
-unix2dos "%DEST_DIR%\changelog.txt"
 
 @echo Files have been copied to %DEST_DIR%

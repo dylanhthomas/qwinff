@@ -9,7 +9,7 @@
           (QWinFF Directory)/qwinff.ini.
        Otherwise, it is written to
           (Home Directory)/.qwinff/qwinff.ini. -->
-  <Portable type="boolean">false</Portable>
+  <Portable type="boolean">true</Portable>
 
   <!-- video file extensions used in the file open dialog -->
   <VideoExtensions>
@@ -37,22 +37,19 @@
   <!-- default folder name to create when setting output path -->
   <NewFolderName>qwinff_output</NewFolderName>
 
-  <!-- seconds to wait before shutting down or suspending the computer -->
-  <PoweroffTimeout type="integer">30</PoweroffTimeout>
-
   <!-- entries of the main window toolbar separated by spaces
        valid values (case insensitive):
           AddFiles Options Exit
           RemoveSelectedItems RemoveCompletedItems ClearList
           OpenOutputFolder SetParameters ChangeOutputFilename
           ChangeOutputDirectory ShowErrorMessage
-          StartConversion StopConversion Retry RetryAll Poweroff
+          StartConversion StopConversion Retry RetryAll
           AboutQt AboutFFmpeg About CheckUpdate
        use "|" to represent a separator
   -->
   <ToolbarEntries>
     AddFiles StartConversion StopConversion Retry RetryAll
-    | RemoveSelectedItems RemoveCompletedItems | OpenOutputFolder Poweroff
+    | RemoveSelectedItems RemoveCompletedItems | OpenOutputFolder
   </ToolbarEntries>
 
   <!-- number of recent paths to remember -->
